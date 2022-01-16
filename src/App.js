@@ -1,4 +1,5 @@
 import './App.css';
+import "./Items.js";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -10,6 +11,9 @@ function App() {
   const [basicItemInfo, setBasicItemInfo] = useState({})
 
   const baseURL = "https://xivapi.com/";
+
+
+
 
   //API call to get item that matches search
 
@@ -24,7 +28,8 @@ function App() {
         setErrorMessage("Sorry we could not find the item, try searching something else!")
       }
       else {
-        console.log(response.data.Results[0].ID)
+        setErrorMessage(""); // Clears previous error messages
+        getRecipeInfo(response.data.Results[0].ID)
       }
 
     }).catch(error => {
@@ -45,19 +50,9 @@ function App() {
 
   const getRecipeInfo = (id) => {
     fetchData("Recipe/"+id)
-      .then((data) => {
-        const ingredientArray = [];
-        for (let i = 0; i < 10; i++) {
-          const ingredientObject = {};
-          if (data[`AmountIngredient${i}`] > 0) {
-            ingredientObject.name = data[`ItemIngredient${i}`].Name
-            ingredientObject.id = data[`ItemIngredient${i}`].ID
-            ingredientObject.amount = data[`AmountIngredient${i}`];
-            ingredientObject.image = baseURL + data[`ItemIngredient${i}`].Icon
-            ingredientArray.push(ingredientObject)
-          }
-        }
-        console.log(ingredientArray);
+      .then((response) => {
+        const data = response.data;
+        console.log(response.data)
       })
       
   }
@@ -75,13 +70,16 @@ function App() {
   }
   
 
-  // getData()
-
   return (
     <div className="App">
       <h1>FFXIV Craftable Items Search</h1>
       <h2>Search for a craftable item from the game Final Fantasy 14</h2>
       <p>Try searching for Iron or Lance to find some stuff!</p>
+      <p className="error">{
+        errorMessage
+          ? errorMessage
+          : null
+      }</p>
       <form onSubmit = { handleSubmit }>
         <label htmlFor="search">Search for an item: </label>
         <input type="text" id="search" onChange = { handleInput } value= { userInput }/>
