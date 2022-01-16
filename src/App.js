@@ -135,7 +135,7 @@ function App() {
       <main>
         <h2>Items</h2>
         <Items items={items} getRecipeInfo={getRecipeInfo} />
-        <h2>Recipes</h2>
+        <h2>{(recipeList.length > 0) ? "Recipes" : null}</h2>
         <Recipes recipes={recipeList} />
       </main>
     </div>
