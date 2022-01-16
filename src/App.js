@@ -1,16 +1,16 @@
 import './App.css';
-import "./Items.js";
+import Items from "./Items.js";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 function App() {
-  const [item, setItem] = useState([]);
+  const [items, setItems] = useState([]);
   const [errorMessage, setErrorMessage] =useState("");
   const [userInput, setUserInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [basicItemInfo, setBasicItemInfo] = useState({})
+  const [recipeList, setRecipeList] = useState([])
 
-  const baseURL = "https://xivapi.com/";
+  const baseURL = "https://xivapi.com";
 
 
 
@@ -18,10 +18,10 @@ function App() {
   //API call to get item that matches search
 
   useEffect(() => {
-    const queryAPI = fetchData("search", {
+    const queryAPI = fetchData("/search", {
       indexes: "Recipe",
       string: searchTerm,
-      limit: 1
+      limit: 5
     }).then(response => {
       
       if (response.data.Results.length === 0){
@@ -29,7 +29,7 @@ function App() {
       }
       else {
         setErrorMessage(""); // Clears previous error messages
-        getRecipeInfo(response.data.Results[0].ID)
+        setItems(response.data.Results);
       }
 
     }).catch(error => {
@@ -48,13 +48,34 @@ function App() {
     setSearchTerm(userInput);
   }
 
-  const getRecipeInfo = (id) => {
-    fetchData("Recipe/"+id)
-      .then((response) => {
-        const data = response.data;
-        console.log(response.data)
-      })
-      
+  const getRecipeInfo = (idEndpoint, itemInfo) => {
+    if (idEndpoint) {
+      fetchData(idEndpoint)
+        .then((response) => {
+          const data = response.data;
+          const ingredientArray = [];
+          const recipeListCopy = [...recipeList]
+          for (let i = 0; i < 10; i++) {
+            const ingredientObject = {};
+            if (data[`AmountIngredient${i}`] > 0) {
+              ingredientObject.name = data[`ItemIngredient${i}`].Name
+              ingredientObject.id = data[`ItemIngredient${i}`].ID
+              ingredientObject.amount = data[`AmountIngredient${i}`];
+              ingredientObject.image = baseURL + data[`ItemIngredient${i}`].Icon
+              ingredientArray.push(ingredientObject)
+            }
+          }
+          itemInfo.ingredientArray = ingredientArray;
+          recipeListCopy.push(itemInfo)
+          setRecipeList(recipeListCopy)
+        })
+        .catch(error => {
+          setErrorMessage("Sorry something went wrong getting the recipe info")
+        })
+    } 
+    else {
+      console.log("Recipe ID doesn't exists")
+    }
   }
 
   // Function queries API, also takes in end point to query
@@ -85,6 +106,7 @@ function App() {
         <input type="text" id="search" onChange = { handleInput } value= { userInput }/>
         <button>Search</button>
       </form>
+      <Items items={ items } getRecipeInfo={getRecipeInfo} />
     </div>
   );
 }
