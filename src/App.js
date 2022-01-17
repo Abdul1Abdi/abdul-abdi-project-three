@@ -38,7 +38,7 @@ function App() {
   
   //  Gets the search term on form submit and queries API 
   useEffect(() => {
-    const queryAPI = fetchData("/search", {
+    fetchData("/search", {
       indexes: "Recipe",
       string: searchTerm,
       limit: 5
