@@ -23,8 +23,17 @@ function App() {
 
   const baseURL = "https://xivapi.com";
 
-
-
+  // Function queries API, also takes in end point to query
+  // Takes in endpoint as a string and a params object
+  async function fetchData(endpoint, params) {
+    const data = await axios({
+      url: baseURL + endpoint,
+      method: "GET",
+      dataResponse: "json",
+      params: params
+    })
+    return data
+  }
 
   
   //  Gets the search term on form submit and queries API 
@@ -73,7 +82,7 @@ function App() {
             const ingredientObject = {};
             if (data[`AmountIngredient${i}`] > 0) {
               ingredientObject.name = data[`ItemIngredient${i}`].Name
-              ingredientObject.id = data[`ItemIngredient${i}`].ID
+              ingredientObject.ID = data[`ItemIngredient${i}`].ID
               ingredientObject.amount = data[`AmountIngredient${i}`];
               ingredientObject.image = baseURL + data[`ItemIngredient${i}`].Icon
               ingredientArray.push(ingredientObject)
@@ -95,21 +104,16 @@ function App() {
     }
   }
 
+  const closeRecipe = id => {
+    const recipeListCopy = [...recipeList];
+    const newRecipeList = recipeListCopy.filter( recipe => recipe.ID !== id );
+    setRecipeList(newRecipeList);
+  }
+
   const subRecipeChecker = id => {
 
   }
 
-  // Function queries API, also takes in end point to query
-  // Takes in endpoint as a string and a params object
-  async function fetchData(endpoint, params){
-    const data = await axios({
-      url: baseURL + endpoint,
-      method: "GET",
-      dataResponse: "json",
-      params: params
-    })
-    return data
-  }
   
 
   return (
@@ -136,7 +140,7 @@ function App() {
         <h2>Items</h2>
         <Items items={items} getRecipeInfo={getRecipeInfo} />
         <h2>{(recipeList.length > 0) ? "Recipes" : null}</h2>
-        <Recipes recipes={recipeList} />
+        <Recipes recipes={recipeList} closeRecipe={closeRecipe} />
       </main>
     </div>
   );

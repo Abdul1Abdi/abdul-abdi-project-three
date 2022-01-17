@@ -13,10 +13,11 @@ function Recipes(props){
                                 <p className="recipeName">{recipe.Name}</p>
                             </div>
                             <p className="className">{recipe.class}</p>
+                            <button className="closeRecipeButton" onClick={() => props.closeRecipe(recipe.ID)}>✖</button>
                         </div>
-                        {recipe.ingredientArray.map( ingredient =>{
+                        {recipe.ingredientArray.map( ingredient => {
                             return(
-                                <div key={ingredient.ID} className="ingredientContainer">
+                                <div key={ ingredient.ID } className="ingredientContainer">
                                     <img src={ingredient.image} alt={"Image of " + ingredient.name} />
                                     <p>{ingredient.name}</p>
                                     <p>{ingredient.amount}</p>
