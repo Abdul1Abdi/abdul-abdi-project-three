@@ -3,10 +3,10 @@ const baseURL = "https://xivapi.com";
 function Recipes(props){
     return(
         <div className="wrapper">
-            {props.recipes.map(recipe => {
-                console.log(recipe)
+            {props.recipes.map((recipe, index) => {
                 return(
-                    <div key={recipe.ID} className="recipeContainer">
+                    //Since recipe.ID is not unique as we can have multiple of the same open, we can add index to it to make it unique
+                    <div key={recipe.ID + index} className="recipeContainer">
                         <div className="nameAndClassContainer">
                             <div className="imgNameContainer">
                                 <img src={baseURL + recipe.Icon} alt="" />
