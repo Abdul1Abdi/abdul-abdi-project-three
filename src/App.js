@@ -2,7 +2,6 @@ import './App.css';
 import Items from "./Items.js";
 import Recipes from "./Recipes.js"
 import { useEffect, useState } from "react";
-import { nanoid } from  "nanoid";
 import axios from "axios";
 
 
