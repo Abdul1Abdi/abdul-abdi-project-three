@@ -1,3 +1,5 @@
+import { nanoid } from "nanoid";
+
 const baseURL = "https://xivapi.com";
 
 function Recipes(props){
@@ -6,7 +8,7 @@ function Recipes(props){
             {props.recipes.map((recipe, index) => {
                 return(
                     //Since recipe.ID is not unique as we can have multiple of the same open, we can add index to it to make it unique
-                    <div key={recipe.ID + index} className="recipeContainer">
+                    <div key={ nanoid() } className="recipeContainer">
                         <div className="nameAndClassContainer">
                             <div className="imgNameContainer">
                                 <img src={baseURL + recipe.Icon} alt="" />
@@ -17,10 +19,14 @@ function Recipes(props){
                         </div>
                         {recipe.ingredientArray.map( ingredient => {
                             return(
-                                <div key={ ingredient.ID } className="ingredientContainer">
+                                <div key={ nanoid() } className="ingredientContainer">
                                     <img src={ingredient.image} alt={"Image of " + ingredient.name} />
                                     <p>{ingredient.name}</p>
                                     <p>{ingredient.amount}</p>
+                                    {(ingredient.recipe
+                                        ? <button onClick={() => props.subRecipeButtonHandler(ingredient.recipe, ingredient)}>Check</button>
+                                        : null)}
+                                    
                                 </div>
                             )
                         })}

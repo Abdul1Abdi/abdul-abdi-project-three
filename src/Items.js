@@ -1,3 +1,5 @@
+import { nanoid } from "nanoid";
+
 const baseURL = "https://xivapi.com";
 
 
@@ -7,7 +9,7 @@ function Items(props){
             {props.items.map((item) => {
                 
                 return (
-                    <div key ={item.ID} className="itemContainer">
+                    <div key ={nanoid()} className="itemContainer">
                         <img src={baseURL + item.Icon} alt="" />
                         <p>{item.Name}</p>
                         <button onClick={() => props.getRecipeInfo(item.Url, item)}>Recipe</button>

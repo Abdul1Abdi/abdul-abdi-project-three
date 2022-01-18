@@ -2,6 +2,7 @@ import './App.css';
 import Items from "./Items.js";
 import Recipes from "./Recipes.js"
 import { useEffect, useState } from "react";
+import { nanoid } from  "nanoid";
 import axios from "axios";
 
 
@@ -9,10 +10,11 @@ import axios from "axios";
 // Organizing api data. data came in a big dump had to figure what I needed and reorganize it using getRecipeInfo
 // Figuring out how to store information and how to update information in other components
 // Had to give function as props and manipulate state in functions that are in App.js.
-// Had to learn to use useState lists to store data.
+// Had to learn to use useState lists to store data and map those lists to render data.
 // Had to research API to see how to search endpoints for data with a particular ID found resources in dedicated discord
 // Learned I need to require images loaded in JSX due to Webpack
 // Had to figure out how to minimize API queries as there was no property on the ingredient to see if it was a recipe
+// Had to find way to get each ingredient ID query API and then get results back and add if there is a recipe to the ingredient array
 
 
 function App() {
@@ -42,7 +44,7 @@ function App() {
     fetchData("/search", {
       indexes: "Recipe",
       string: searchTerm,
-      limit: 5
+      limit: 9
     }).then(response => {
       
       if (response.data.Results.length === 0){
@@ -92,6 +94,9 @@ function App() {
               
             }
           }
+          //The name and icon here are added in case it came from sub recipe and didnt have a name/icon on the item info
+          itemInfo.Name = data.Name;
+          itemInfo.Icon = data.Icon;
           // Adds class info
           itemInfo.class = data.ClassJob.Abbreviation
           // Adds a property with each ingredients info in a list
@@ -115,22 +120,24 @@ function App() {
   }
 
 
-  //Take in the array of IDs
+  //This takes in information from getRecipe info and queries the API using each ingredient ID
+  //If the item ID exists as a recipe it will take the recipe ID and add it as a property to the ingredient object
+  // This will be used in the subRecipe button handler
   const subRecipeChecker = (ingredientListCopy, itemInfo, recipeListCopy) => {
     const idList = ingredientListCopy.map((ingredient) => {
       return ingredient.ID
     })
-    console.log(idList)
+    
     fetchData("/item", {
       ids: idList.toString(),
       columns:"Recipes,ID"
     }).then((response)=>{
       const data = response.data.Results;
-      console.log(data)
+      
       data.forEach((recipeQuery) => {
         ingredientListCopy.map ((ingredient) => {
           if (recipeQuery.ID === ingredient.ID && recipeQuery.Recipes){
-            ingredient.recipeID = recipeQuery.Recipes
+            ingredient.recipe = recipeQuery.Recipes
             return ingredient
           } else { return false}
 
@@ -147,7 +154,14 @@ function App() {
 
   }
 
-  
+  //This will get the recipe ID(or IDs) in an array and then call the getRecipeInfo function to add it to the page
+  const subRecipeButtonHandler = (recipeArray, itemInfo) => {
+    recipeArray.forEach((recipe) => {
+      const recipeURL = "/Recipe/" + recipe.ID
+      getRecipeInfo(recipeURL, itemInfo)
+    })
+    
+  }
 
   return (
     <div className="App">
@@ -173,7 +187,7 @@ function App() {
         <h2>Items</h2>
         <Items items={items} getRecipeInfo={getRecipeInfo} />
         <h2>{(recipeList.length > 0) ? "Recipes" : null}</h2>
-        <Recipes recipes={recipeList} closeRecipe={closeRecipe} />
+        <Recipes recipes={recipeList} closeRecipe={closeRecipe} subRecipeButtonHandler = {subRecipeButtonHandler}/>
       </main>
     </div>
   );
