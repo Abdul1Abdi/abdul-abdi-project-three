@@ -12,6 +12,7 @@ import axios from "axios";
 // Had to learn to use useState lists to store data.
 // Had to research API to see how to search endpoints for data with a particular ID found resources in dedicated discord
 // Learned I need to require images loaded in JSX due to Webpack
+// Had to figure out how to minimize API queries as there was no property on the ingredient to see if it was a recipe
 
 
 function App() {
@@ -76,6 +77,7 @@ function App() {
           const data = response.data;
           //The data returned is very cluttered and has seperate properties for each ingredient. It has seperate properties for each ingredient up to 9 and most of them are usually empty. This checks each ingredient in a loop to see if it has more than 0 and then if it does it gets info from the ItemIngredient property and creates an object for each ingredient.
           const ingredientArray = [];
+          
           //Make copy of state recipeList
           const recipeListCopy = [...recipeList]
           for (let i = 0; i < 10; i++) {
@@ -85,15 +87,17 @@ function App() {
               ingredientObject.ID = data[`ItemIngredient${i}`].ID
               ingredientObject.amount = data[`AmountIngredient${i}`];
               ingredientObject.image = baseURL + data[`ItemIngredient${i}`].Icon
+              // Adds in individual ingredient object onto the array
               ingredientArray.push(ingredientObject)
+              
             }
           }
+          // Adds class info
           itemInfo.class = data.ClassJob.Abbreviation
           // Adds a property with each ingredients info in a list
           itemInfo.ingredientArray = ingredientArray;
-          recipeListCopy.push(itemInfo);
-          //Keeps the recipe in the recipeList state variable so it can hold multiple recipes
-          setRecipeList(recipeListCopy);
+          // Hands over ingredient Aray, itemInfo so it can append ingredients to it, and recipeList so it can change state recipeList
+          subRecipeChecker(ingredientArray, itemInfo, recipeListCopy);
         })
         .catch(error => {
           setErrorMessage("Sorry something went wrong getting the recipe info")
@@ -110,9 +114,38 @@ function App() {
     setRecipeList(newRecipeList);
   }
 
-  // const subRecipeChecker = id => {
 
-  // }
+  //Take in the array of IDs
+  const subRecipeChecker = (ingredientListCopy, itemInfo, recipeListCopy) => {
+    const idList = ingredientListCopy.map((ingredient) => {
+      return ingredient.ID
+    })
+    console.log(idList)
+    fetchData("/item", {
+      ids: idList.toString(),
+      columns:"Recipes,ID"
+    }).then((response)=>{
+      const data = response.data.Results;
+      console.log(data)
+      data.forEach((recipeQuery) => {
+        ingredientListCopy.map ((ingredient) => {
+          if (recipeQuery.ID === ingredient.ID && recipeQuery.Recipes){
+            ingredient.recipeID = recipeQuery.Recipes
+            return ingredient
+          } else { return false}
+
+        })
+      })
+      
+     
+      recipeListCopy.push(itemInfo);
+      //Keeps the recipe in the recipeList state variable so it can hold multiple recipes
+      setRecipeList(recipeListCopy);
+    }).catch(error => {
+      setErrorMessage("Sorry something went wrong getting the recipe info")
+    })
+
+  }
 
   
 
