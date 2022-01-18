@@ -133,13 +133,13 @@ function App() {
     }).then((response)=>{
       const data = response.data.Results;
       
+      //This loops through the array returned from the API since it returns out of order from the IDs you query
       data.forEach((recipeQuery) => {
-        ingredientListCopy.map ((ingredient) => {
+        ingredientListCopy.forEach((ingredient) => {
           if (recipeQuery.ID === ingredient.ID && recipeQuery.Recipes){
             ingredient.recipe = recipeQuery.Recipes
             return ingredient
-          } else { return false}
-
+          }
         })
       })
       
