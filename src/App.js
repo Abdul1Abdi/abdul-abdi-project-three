@@ -1,8 +1,10 @@
+
 import './App.css';
 import Items from "./Items.js";
 import Recipes from "./Recipes.js"
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
+
 
 
 // Challenges:
@@ -24,6 +26,9 @@ function App() {
   const [recipeList, setRecipeList] = useState([])
 
   const baseURL = "https://xivapi.com";
+
+  const itemsRef = useRef(null);
+  const recipesRef = useRef(null);
 
   // Function queries API, also takes in end point to query
   // Takes in endpoint as a string and a params object
@@ -68,6 +73,8 @@ function App() {
   const handleSubmit = (event) => {
     event.preventDefault();
     setSearchTerm(userInput);
+    //Scrolls to items header
+    itemsRef.current.scrollIntoView();
   }
 
   //Take in an endpoint such as /Recipe/23 and an object with simple item info that was pulled from the /Search API call
@@ -147,6 +154,7 @@ function App() {
       recipeListCopy.push(itemInfo);
       //Keeps the recipe in the recipeList state variable so it can hold multiple recipes
       setRecipeList(recipeListCopy);
+      recipesRef.current.scrollIntoView(false);
     }).catch(error => {
       setErrorMessage("Sorry something went wrong getting the recipe info")
     })
@@ -160,6 +168,10 @@ function App() {
       getRecipeInfo(recipeURL, itemInfo)
     })
     
+  }
+
+  const clearRecipes = () => {
+    setRecipeList([]);
   }
 
   return (
@@ -183,11 +195,34 @@ function App() {
         </div>
       </header>
       <main>
-        <h2>Items</h2>
-        <Items items={items} getRecipeInfo={getRecipeInfo} />
-        <h2>{(recipeList.length > 0) ? "Recipes" : null}</h2>
-        <Recipes recipes={recipeList} closeRecipe={closeRecipe} subRecipeButtonHandler = {subRecipeButtonHandler}/>
+        <section className="itemsSection">
+          <h2 ref={itemsRef}>Items</h2>
+          <Items items={items} getRecipeInfo={getRecipeInfo} />
+          <p className="error">{
+            errorMessage
+              ? errorMessage
+              : null
+          }</p>
+        </section>
+        <section ref={recipesRef} className="recipesSection">
+          {(recipeList.length > 0)
+            ? (
+              <div className="wrapper">
+                <h2>Recipes</h2>
+                <div className="clearButtonContainer">
+                  <button onClick={clearRecipes} className="clearButton">Clear</button>
+                </div>
+              </div>
+            )
+            : null
+          }
+          <Recipes recipes={recipeList} closeRecipe={closeRecipe} subRecipeButtonHandler={subRecipeButtonHandler} />
+        </section>
+       
       </main>
+      <footer>
+        <p>Created at <a href="https://junocollege.com/">Juno College</a></p>
+      </footer>
     </div>
   );
 }
