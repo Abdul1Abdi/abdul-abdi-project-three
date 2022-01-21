@@ -234,7 +234,7 @@ main img {
 
 .clearButtonContainer {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
   
 }
 
@@ -253,7 +253,7 @@ main img {
 }
 
 .rightHalfIngredientContainer {
-  justify-content: end;
+  justify-content: flex-end;
 }
 
 .ingredientContainer img {
