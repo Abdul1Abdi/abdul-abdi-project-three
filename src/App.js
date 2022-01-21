@@ -7,15 +7,7 @@ import axios from "axios";
 
 
 
-// Challenges:
-// Organizing api data. data came in a big dump had to figure what I needed and reorganize it using getRecipeInfo
-// Figuring out how to store information and how to update information in other components
-// Had to give function as props and manipulate state in functions that are in App.js.
-// Had to learn to use useState lists to store data and map those lists to render data.
-// Had to research API to see how to search endpoints for data with a particular ID found resources in dedicated discord
-// Learned I need to require images loaded in JSX due to Webpack
-// Had to figure out how to minimize API queries as there was no property on the ingredient to see if it was a recipe
-// Had to find way to get each ingredient ID query API and then get results back and add if there is a recipe to the ingredient array
+
 
 
 function App() {
@@ -189,7 +181,7 @@ function App() {
           }</p>
           <form onSubmit={handleSubmit}>
             <label htmlFor="search"></label>
-            <input type="text" id="search" onChange={handleInput} value={userInput} />
+            <input type="text" id="search" onChange={handleInput} value={userInput} placeholder="Item name..." />
             <button>Search</button>
           </form>
         </div>

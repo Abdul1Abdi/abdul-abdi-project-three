@@ -292,3 +292,25 @@ main img {
 footer {
   font-size: 0.8rem;
 }
+
+/* Media Queries */
+
+@media screen and (max-width:768px){
+  header img {
+    width: 350px;
+  }
+}
+
+@media screen and (max-width:480px){
+  header img {
+    width: 200px;
+  }
+  form {
+    flex-direction: column;
+  }
+
+  form input {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
