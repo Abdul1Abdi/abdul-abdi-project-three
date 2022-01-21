@@ -29,8 +29,8 @@ function Recipes(props){
                                     <div className="rightHalfIngredientContainer">
                                         <p>{ingredient.amount}</p>
                                         {(ingredient.recipe
-                                            ? <button className="subRecipeButton" onClick={() => props.subRecipeButtonHandler(ingredient.recipe, ingredient)}> <FontAwesomeIcon icon={faChevronRight} /></button>
-                                            : <p className="noRecipeSpace"><FontAwesomeIcon icon={faChevronRight} /></p>)}
+                                            ? <button className="subRecipeButton" onClick={() => props.subRecipeButtonHandler(ingredient.recipe, ingredient)} aria-label="Get recipe for ingredient"> <FontAwesomeIcon icon={faChevronRight} /></button>
+                                            : <p className="noRecipeSpace" ><FontAwesomeIcon icon={faChevronRight} /></p>)}
                                     </div>
                                 </div>
                             )
