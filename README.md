@@ -6,9 +6,9 @@ This site lets you search for craftable items in the game Final Fantasy 14 and d
 
 React.js
 
-### Challenges an things learned!
+### Challenges and things learned!
 
-- Organizing api data. data came in a big dump had to figure what I needed and reorganize it using getRecipeInfo
+- Organizing API data. data came in a big dump had to figure what I needed and reorganize it using getRecipeInfo
 - Figuring out how to store information and how to update information in other components
 - Had to give function as props and manipulate state in functions that are in App.js.
 - Had to learn to use useState lists to store data and map those lists to render data.
